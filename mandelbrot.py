@@ -87,7 +87,7 @@ class mandelbrot():
             del(temp)
             corner1 = (corner1 - zoom_center) * zoom_per_frame + zoom_center
             corner2 = (corner2 - zoom_center) * zoom_per_frame + zoom_center
-            print(_)
+            #print(_)
         return frames
     def zoom_sequence_patched(self, n_frames=100, zoom_center=0, zoom_per_frame=0.95,
                           frame_iter=100, patch_dim = 100,patch_num_x = 5,patch_num_y = 5, corner1=None, corner2=None):
@@ -105,7 +105,7 @@ class mandelbrot():
             del(temp)
             corner1 = (corner1 - zoom_center) * zoom_per_frame + zoom_center
             corner2 = (corner2 - zoom_center) * zoom_per_frame + zoom_center
-            print(_)
+            #print(_)
 
         return frames
     
@@ -120,4 +120,5 @@ class mandelbrot():
 #     optimize=False,            # you can try True for smaller file size
 #     duration=50,               # time per frame in ms (20 fps = 50ms)
 #     loop=0                     # 0 = loop forever
+
 # )
