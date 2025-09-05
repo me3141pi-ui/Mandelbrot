@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import colorsys
 from PIL import Image
 import numba as nb
 import sys
@@ -170,6 +169,7 @@ class mandelbrot():
 
         return frames
     
+
 
 
 
