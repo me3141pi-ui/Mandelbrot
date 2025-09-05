@@ -1,5 +1,5 @@
 import math
-from mandelbrot import complex_matrix,complex_matrix_to_data,distinct_colors,color_list
+from mandelbrot import complex_matrix,complex_matrix_to_data,color_list
 import numpy as np
 import matplotlib.pyplot as plt
 from PIL import Image
@@ -193,6 +193,7 @@ class julia:
     #         corner1 = (corner1 - zoom_center) * zoom_per_frame + zoom_center
     #         corner2 = (corner2 - zoom_center) * zoom_per_frame + zoom_center
     #     return frames
+
 
 
 
