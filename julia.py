@@ -1,5 +1,4 @@
 import math
-
 from mandelbrot import complex_matrix,complex_matrix_to_data,distinct_colors,color_list
 import numpy as np
 import matplotlib.pyplot as plt
@@ -7,7 +6,7 @@ from PIL import Image
 import sys
 
 class julia:
-    def __init__(self,corner1 = -1 + 1j,corner2 = 1-1j,x_num=1000,y_num=1000,explosion_boundary = 2,power = 2,c = 1 + 1j):
+    def __init__(self,corner1 = -2 + 2j,corner2 = 2-2j,x_num=1000,y_num=1000,explosion_boundary = 2,power = 2,c = 0.5 + 0.355j):
         self.corners = (corner1,corner2)
         self.size = (x_num,y_num)
         self.power = power
@@ -40,7 +39,7 @@ class julia:
         plt.axis('equal')
         plt.show()
 
-#Saves the mandelbrot
+    #julia set image
     def image(self,color = None,colorBG=None):
         if color is None:
             color = (255,255,255)
@@ -57,13 +56,10 @@ class julia:
                     img.putpixel((j,i),col_temp)
         return img
 
-    def divergence_image(self,color_n = 10):
-
-
+    def divergence_image(self,color_n = 10,global_max = None):
         h, b = self.matrix.shape
         img = Image.new(mode="RGB", size=(b,h), color=(0,0,0))
-        max_iter = np.max(self.counter)
-
+        max_iter = np.max(self.counter) if global_max is None else global_max
 
         for i in range(h):
             for j in range(b):
@@ -73,7 +69,7 @@ class julia:
                     img.putpixel((j,i),col_temp)
         return img
 
-    #generates the mandelbrot in batches rather than making it all at once
+    #generates the julia set in batches rather than making it all at once
     def stitch_image(self,patch_dim = 100 , patch_num_x = 5 , patch_num_y = 5,iter_per_patch = 200,color = None,colorBG = None):
         super_img = Image.new(mode="RGB", size=(patch_num_x * patch_dim, patch_num_y* patch_dim), color=(0, 0, 0))
         boundary_vertices = complex_matrix(self.corners[0],self.corners[1],x_num=patch_num_x+1,y_num=patch_num_y+1)
@@ -133,26 +129,26 @@ class julia:
 
         return frames
 
-    #NOT WORKING REQUIRES WORK
-    # def stitch_image_divergence(self,patch_dim = 100 , patch_num_x = 5 , patch_num_y = 5,
-    #                             iter_per_patch = 200, color_n = 50):
-    #     super_img = Image.new(mode="RGB", size=(patch_num_x * patch_dim, patch_num_y * patch_dim), color=(0, 0, 0))
-    #     boundary_vertices = complex_matrix(self.corners[0], self.corners[1], x_num=patch_num_x+1, y_num=patch_num_y+1)
-    #     indx = 0
-    #     total = patch_num_x * patch_num_y
-    #     for i in range(patch_num_x):
-    #         for j in range(patch_num_y):
-    #             c1, c2 = boundary_vertices[j][i], boundary_vertices[j+1][i+1]
-    #             temp = julia(c1, c2, x_num=patch_dim, y_num=patch_dim,
-    #                          power=self.power, explosion_boundary=self.explosion_boundary, c=self.c)
-    #             temp.run(iter=iter_per_patch)
-    #             temp_img = temp.divergence_image(color_n=color_n)
-    #             super_img.paste(temp_img, (i*patch_dim, j*patch_dim))
-    #             del temp, temp_img
-    #             sys.stdout.write(f'\rProgress: {indx*100/total:.2f}%')
-    #             sys.stdout.flush()
-    #             indx += 1
-    #     return super_img
+    #WORKING BUT THE CONTRAST IS NOT THAT CLEAR
+    def stitch_image_divergence(self,patch_dim = 100 , patch_num_x = 5 , patch_num_y = 5,
+                                iter_per_patch = 200, color_n = 50):
+        super_img = Image.new(mode="RGB", size=(patch_num_x * patch_dim, patch_num_y * patch_dim), color=(0, 0, 0))
+        boundary_vertices = complex_matrix(self.corners[0], self.corners[1], x_num=patch_num_x+1, y_num=patch_num_y+1)
+        indx = 0
+        total = patch_num_x * patch_num_y
+        for i in range(patch_num_x):
+            for j in range(patch_num_y):
+                c1, c2 = boundary_vertices[j][i], boundary_vertices[j+1][i+1]
+                temp = julia(c1, c2, x_num=patch_dim, y_num=patch_dim,
+                             power=self.power, explosion_boundary=self.explosion_boundary, c=self.c)
+                temp.run(iter=iter_per_patch)
+                temp_img = temp.divergence_image(color_n=color_n,global_max = iter_per_patch)
+                super_img.paste(temp_img, (i*patch_dim, j*patch_dim))
+                del temp, temp_img
+                sys.stdout.write(f'\rProgress: {indx*100/total:.2f}%')
+                sys.stdout.flush()
+                indx += 1
+        return super_img
 
     # zoom sequence with divergence_image
     def zoom_sequence_divergence(self, n_frames=100, zoom_center=0, zoom_per_frame=0.95,
